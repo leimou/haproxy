@@ -39,4 +39,3 @@ CMD ["bash", "/haproxy-start"]
 
 # Expose ports.
 EXPOSE 5000
-EXPOSE 8001
