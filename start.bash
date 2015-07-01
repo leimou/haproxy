@@ -1,29 +1,5 @@
 #!/bin/bash
 
-#
-# start.bash
-#
+service haproxy restart
 
-HAPROXY="/etc/haproxy"
-OVERRIDE="/haproxy-override"
-PIDFILE="/var/run/haproxy.pid"
-
-CONFIG="haproxy.cfg"
-ERRORS="errors"
-
-cd "$HAPROXY"
-
-# Symlink errors directory
-if [[ -d "$OVERRIDE/$ERRORS" ]]; then
-  mkdir -p "$OVERRIDE/$ERRORS"
-  rm -fr "$ERRORS"
-  ln -s "$OVERRIDE/$ERRORS" "$ERRORS"
-fi
-
-# Symlink config file.
-if [[ -f "$OVERRIDE/$CONFIG" ]]; then
-  rm -f "$CONFIG"
-  ln -s "$OVERRIDE/$CONFIG" "$CONFIG"
-fi
-
-exec haproxy -f /etc/haproxy/haproxy.cfg -p "$PIDFILE"
+consul-template -consul 127.0.0.1:8500 -template "/etc/haproxy/haproxy.ctmpl:/etc/haproxy/haproxy.cfg:bash /haproxy-reload && cat /etc/haproxy/haproxy.cfg"

@@ -26,3 +26,7 @@ backend fep_backend
   balance     leastconn
   mode    tcp
   option  tcplog
+  option  log-health-checks
+
+  {{range service "fep"}}
+  server {{.ID}} {{.Address}}:{{.Port}}{{end}}
